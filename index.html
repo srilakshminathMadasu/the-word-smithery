@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Roman Times – Julius Caesar</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #f2e8c9;
+    --parchment-dark: #e8d9a8;
+    --parchment-light: #faf4e1;
+    --ink: #1a1208;
+    --ink-light: #3a2e1a;
+    --ink-faded: #6b5a3e;
+    --gold: #b8860b;
+    --gold-light: #d4a017;
+    --gold-bright: #f0c030;
+    --red-accent: #8b1a1a;
+    --border-dark: #4a3520;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: #c8b87a;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(0,0,0,0.03) 28px, rgba(0,0,0,0.03) 29px),
+      repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(0,0,0,0.02) 28px, rgba(0,0,0,0.02) 29px);
+    font-family: 'IM Fell English', Georgia, serif;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .newspaper {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--parchment);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+    box-shadow: 0 4px 40px rgba(0,0,0,0.45), inset 0 0 80px rgba(0,0,0,0.04);
+    position: relative;
+  }
+
+  /* Aged edge effect */
+  .newspaper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(100,70,20,0.18) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ─── MASTHEAD ─── */
+  .masthead {
+    border-bottom: 3px double var(--border-dark);
+    padding: 18px 32px 12px;
+    text-align: center;
+    position: relative;
+  }
+
+  .masthead-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.72rem;
+    color: var(--ink-faded);
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 6px;
+  }
+
+  .masthead-meta span { margin: 0 8px; }
+
+  .masthead h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    color: var(--ink);
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.12);
+    margin: 4px 0 2px;
+  }
+
+  .masthead-sub {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--ink-faded);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+
+  .masthead-rule {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 6px 0;
+  }
+
+  .masthead-rule hr {
+    flex: 1;
+    border: none;
+    border-top: 2px solid var(--gold);
+  }
+
+  .masthead-rule .ornament {
+    font-size: 1.4rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .edition-banner {
+    background: var(--ink);
+    color: var(--gold-bright);
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    padding: 4px 0;
+    margin-top: 10px;
+  }
+
+  /* ─── NAV ─── */
+  .section-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    border-bottom: 3px double var(--border-dark);
+    background: var(--parchment-dark);
+  }
+
+  .section-nav a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 7px 18px;
+    border-right: 1px solid var(--border-dark);
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .section-nav a:first-child { border-left: 1px solid var(--border-dark); }
+  .section-nav a:hover { background: var(--ink); color: var(--gold-bright); }
+
+  /* ─── MAIN GRID ─── */
+  .paper-body {
+    padding: 0 28px 32px;
+  }
+
+  /* ─── MAIN HEADLINE ─── */
+  .main-headline {
+    text-align: center;
+    padding: 24px 20px 16px;
+    border-bottom: 2px solid var(--border-dark);
+    margin-bottom: 0;
+  }
+
+  .kicker {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--red-accent);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .main-headline h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .main-headline .deck {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ink-light);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  /* ─── COLUMNS ─── */
+  .columns-wrap {
+    display: grid;
+    grid-template-columns: 1fr 2px 1fr 2px 1fr;
+    gap: 0 0;
+    padding: 20px 0;
+    border-bottom: 2px solid var(--border-dark);
+  }
+
+  .col-divider {
+    background: var(--border-dark);
+    margin: 0 16px;
+  }
+
+  .col { padding: 0 14px; }
+  .col:first-child { padding-left: 0; }
+  .col:last-child { padding-right: 0; }
+
+  .col h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .col .byline {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-faded);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .col p {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--ink-light);
+    text-align: justify;
+    hyphens: auto;
+    margin-bottom: 7px;
+  }
+
+  .drop-cap::first-letter {
+    font-family: 'Cinzel', serif;
+    font-size: 3.6em;
+    font-weight: 900;
+    float: left;
+    line-height: 0.75;
+    margin: 4px 6px -2px 0;
+    color: var(--ink);
+  }
+
+  /* ─── PULL QUOTE ─── */
+  .pull-quote {
+    border-top: 3px solid var(--gold);
+    border-bottom: 3px solid var(--gold);
+    margin: 14px 0;
+    padding: 10px 0;
+    text-align: center;
+  }
+
+  .pull-quote blockquote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  .pull-quote cite {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--ink-faded);
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* ─── FEATURED SECTION ─── */
+  .featured-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 0;
+    border-bottom: 2px solid var(--border-dark);
+    padding: 0;
+  }
+
+  .featured-main {
+    padding: 20px 20px 20px 0;
+    border-right: 2px solid var(--border-dark);
+  }
+
+  .featured-main h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  .featured-sidebar {
+    padding: 20px 0 20px 20px;
+  }
+
+  /* ─── IMAGE BOX ─── */
+  .img-box {
+    border: 2px solid var(--border-dark);
+    margin: 12px 0;
+    text-align: center;
+    background: var(--parchment-dark);
+  }
+
+  .img-box .img-inner {
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    background: linear-gradient(135deg, #e8d9a8 0%, #d4c07a 100%);
+    color: var(--ink-faded);
+  }
+
+  .img-box figcaption {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.72rem;
+    color: var(--ink-faded);
+    padding: 5px 8px;
+    border-top: 1px solid var(--border-dark);
+    text-align: left;
+  }
+
+  /* ─── SIDEBAR ITEMS ─── */
+  .sidebar-item {
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--parchment-dark);
+  }
+
+  .sidebar-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .sidebar-item h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 5px;
+    color: var(--ink);
+  }
+
+  .sidebar-item p {
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--ink-light);
+    text-align: justify;
+  }
+
+  /* ─── DRAMATIS PERSONAE ─── */
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    font-weight: 700;
+    color: var(--ink-faded);
+    text-align: center;
+    padding: 12px 0 8px;
+    position: relative;
+  }
+
+  .section-title::before,
+  .section-title::after {
+    content: '— ';
+    color: var(--gold);
+  }
+
+  .section-title::after { content: ' —'; }
+
+  .characters-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 2px solid var(--border-dark);
+    margin-bottom: 20px;
+  }
+
+  .char-card {
+    padding: 14px 12px;
+    border-right: 1px solid var(--border-dark);
+    text-align: center;
+  }
+
+  .char-card:last-child { border-right: none; }
+
+  .char-card .char-initial {
+    font-family: 'Cinzel', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
+  }
+
+  .char-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+    color: var(--ink);
+  }
+
+  .char-card .char-role {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    color: var(--red-accent);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .char-card p {
+    font-size: 0.75rem;
+    line-height: 1.55;
+    color: var(--ink-faded);
+  }
+
+  /* ─── BOTTOM GRID ─── */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    border-top: 2px solid var(--border-dark);
+    padding-top: 18px;
+    margin-top: 4px;
+  }
+
+  .bottom-col {
+    padding: 0 16px;
+    border-right: 1px solid var(--border-dark);
+  }
+
+  .bottom-col:first-child { padding-left: 0; }
+  .bottom-col:last-child { border-right: none; padding-right: 0; }
+
+  .bottom-col h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--ink);
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 4px;
+  }
+
+  .bottom-col p, .bottom-col li {
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--ink-light);
+  }
+
+  .bottom-col ul {
+    padding-left: 14px;
+    margin-top: 4px;
+  }
+
+  .bottom-col li {
+    margin-bottom: 4px;
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+
+  .timeline-act {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--gold);
+    background: var(--ink);
+    padding: 2px 6px;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+
+  .timeline-item p {
+    margin: 0;
+  }
+
+  /* ─── ORACLE BOX ─── */
+  .oracle-box {
+    border: 3px double var(--red-accent);
+    padding: 14px 18px;
+    background: linear-gradient(135deg, rgba(139,26,26,0.05) 0%, transparent 100%);
+    margin-bottom: 16px;
+  }
+
+  .oracle-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--red-accent);
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+
+  .oracle-box p {
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--ink-light);
+  }
+
+  .omen { font-style: italic; color: var(--red-accent); }
+
+  /* ─── FOOTER ─── */
+  .paper-footer {
+    border-top: 3px double var(--border-dark);
+    padding: 10px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--parchment-dark);
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-faded);
+  }
+
+  .footer-center {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.75rem;
+    color: var(--gold);
+  }
+
+  /* ─── DECORATION ─── */
+  .gold-rule {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 0.3em;
+    padding: 8px 0;
+    border-top: 1px solid var(--parchment-dark);
+    border-bottom: 1px solid var(--parchment-dark);
+    margin: 12px 0;
+  }
+
+  .section-banner {
+    background: var(--ink);
+    color: var(--gold-bright);
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    font-weight: 700;
+    padding: 5px 14px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  /* Responsive */
+  @media (max-width: 760px) {
+    body { padding: 8px; }
+    .paper-body { padding: 0 12px 20px; }
+    .columns-wrap { grid-template-columns: 1fr; }
+    .col-divider { height: 1px; width: 100%; margin: 10px 0; }
+    .col { padding: 0; }
+    .featured-row { grid-template-columns: 1fr; }
+    .featured-main { border-right: none; padding-right: 0; border-bottom: 2px solid var(--border-dark); }
+    .featured-sidebar { padding-left: 0; }
+    .characters-grid { grid-template-columns: 1fr 1fr; }
+    .char-card:nth-child(2) { border-right: none; }
+    .char-card:nth-child(3) { border-top: 1px solid var(--border-dark); }
+    .char-card:nth-child(4) { border-top: 1px solid var(--border-dark); border-right: none; }
+    .bottom-grid { grid-template-columns: 1fr; }
+    .bottom-col { border-right: none; border-bottom: 1px solid var(--border-dark); padding: 0 0 16px 0; margin-bottom: 16px; }
+    .section-nav { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+<div class="newspaper">
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="masthead-top">
+      <div class="masthead-meta">
+        <span>VOL. DCCIX</span>
+        <span>NO. XLIV</span>
+      </div>
+      <div class="masthead-meta">
+        <span>ESTABLISHED A.U.C. 709</span>
+        <span>PRICE: ONE SESTERTIUS</span>
+      </div>
+      <div class="masthead-meta">
+        <span>THE IDES OF MARCH, XLIV B.C.</span>
+      </div>
+    </div>
+
+    <div class="masthead-rule">
+      <hr><span class="ornament">⚔</span>
+      <h1>The Roman Times</h1>
+      <span class="ornament">⚔</span><hr>
+    </div>
+
+    <div class="masthead-sub">Veritas · Honos · Gloria Romae</div>
+
+    <div class="edition-banner">
+      SPECIAL EDITION — EVENTS AT THE THEATRE OF POMPEY — SENATE IN CRISIS
+    </div>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav class="section-nav">
+    <a href="#">Senate</a>
+    <a href="#">Military</a>
+    <a href="#">Forum</a>
+    <a href="#">Omens</a>
+    <a href="#">Tributes</a>
+    <a href="#">Markets</a>
+  </nav>
+
+  <div class="paper-body">
+
+    <!-- MAIN HEADLINE -->
+    <div class="main-headline">
+      <span class="kicker">☩ BREAKING NEWS FROM THE SENATE ☩</span>
+      <h2>CAESAR SLAIN ON THE IDES OF MARCH</h2>
+      <p class="deck">The Dictator Perpetuo falls to a band of Senators; the Eternal City trembles as the fate of the Republic hangs by a thread upon this most dreadful day</p>
+    </div>
+
+    <!-- THREE COLUMNS -->
+    <div class="columns-wrap">
+      <div class="col">
+        <h3>Conspirators Strike at the Heart of Rome</h3>
+        <span class="byline">By Gaius Scribonius · Senate Correspondent</span>
+        <p class="drop-cap">Julius Caesar, Dictator Perpetuo of Rome, was this morning assassinated within the Theatre of Pompey, falling before a assembly of some twenty-three Senators armed with daggers concealed beneath their togas. The attack came as Caesar took his seat, at which moment the conspirators descended upon him.</p>
+        <p>Sources present at the scene report that Casca struck the first blow, followed swiftly by the others. Caesar is said to have defended himself briefly before recognizing among his attackers the face of Marcus Junius Brutus, at which moment he ceased to struggle and drew his toga about his face to meet his end with dignity.</p>
+        <div class="pull-quote">
+          <blockquote>"Et tu, Bruté? — Then fall, Caesar."</blockquote>
+          <cite>— Last words attributed to Gaius Julius Caesar</cite>
+        </div>
+        <p>The body of the Dictator was discovered to bear three-and-twenty wounds, though physicians summoned to the scene report that but a single wound to the chest proved fatal. The Senate hall fell into immediate panic, with many senators and citizens fleeing into the streets of Rome.</p>
+      </div>
+
+      <div class="col-divider"></div>
+
+      <div class="col">
+        <h3>Brutus Addresses the Citizens: "Rome is Free"</h3>
+        <span class="byline">By Publius Velius · Forum Reporter</span>
+        <p class="drop-cap">In the immediate hours following the assassination, Marcus Junius Brutus descended to the Forum Romanum and addressed the gathered populace, defending the actions of those he called liberators. He declared the deed was done not out of malice toward Caesar the man, but out of love for Rome and fear of tyranny.</p>
+        <p>The crowd, stunned and uncertain, appeared briefly swayed by Brutus's eloquent reasoning. He spoke of honour, of the Republic, and of the freedoms imperilled by one man's unchecked ambition, drawing comparisons to the expulsion of King Tarquinius Superbus of centuries past.</p>
+        <figure class="img-box">
+          <div class="img-inner">🏛️</div>
+          <figcaption>The Forum Romanum, where Brutus addressed the citizens of Rome following the assassination.</figcaption>
+        </figure>
+        <p>However, the mood shifted dramatically when Mark Antony, Caesar's loyal lieutenant and consul, took the rostrum and delivered a funeral oration over Caesar's body that moved the Roman mob to tears — and then to fury.</p>
+      </div>
+
+      <div class="col-divider"></div>
+
+      <div class="col">
+        <h3>Antony's Oration Turns the Tide of Public Opinion</h3>
+        <span class="byline">By Flavia Maxima · Forum Correspondent</span>
+        <p class="drop-cap">Mark Antony, granted the right to speak at Caesar's funeral by a perhaps overly trusting Brutus, delivered an oration that those present shall not soon forget. Beginning with the words now repeated throughout Rome — "Friends, Romans, countrymen" — he spoke with calculated precision.</p>
+        <p>Antony repeatedly styled Brutus an "honourable man" with an irony so pointed as to provoke the assembled citizens to rage. He displayed Caesar's bloodied, wound-covered toga to the crowd, and is said to have read aloud a will bequeathing Caesar's private gardens to the people and seventy-five drachmas to every Roman citizen.</p>
+        <div class="pull-quote">
+          <blockquote>"The evil that men do lives after them; the good is oft interred with their bones."</blockquote>
+          <cite>— Mark Antony, at Caesar's funeral</cite>
+        </div>
+        <p>By the time Antony had finished speaking, the Roman mob had turned entirely against the conspirators. Riots erupted across the city; Brutus, Cassius, and their faction have been forced to flee Rome entirely. Civil war, this correspondent fears, is all but inevitable.</p>
+      </div>
+    </div>
+
+    <!-- GOLD RULE -->
+    <div class="gold-rule">✦ ✦ ✦ ✦ ✦</div>
+
+    <!-- DRAMATIS PERSONAE -->
+    <div class="section-title">DRAMATIS PERSONAE — THE PRINCIPAL ACTORS IN THIS TRAGEDY</div>
+    <div class="characters-grid">
+      <div class="char-card">
+        <span class="char-initial">C</span>
+        <h4>Julius Caesar</h4>
+        <span class="char-role">Dictator of Rome</span>
+        <p>The most powerful man in the Roman world. Ambitious, magnanimous, and beloved by the common people, he was feared by many in the Senate as a threat to the Republic.</p>
+      </div>
+      <div class="char-card">
+        <span class="char-initial">B</span>
+        <h4>Marcus Brutus</h4>
+        <span class="char-role">Conspirator · Senator</span>
+        <p>A man of deep honour and genuine republican ideals, Brutus was convinced by Cassius that Caesar's death was necessary to preserve Roman freedom — a decision he may yet regret.</p>
+      </div>
+      <div class="char-card">
+        <span class="char-initial">A</span>
+        <h4>Mark Antony</h4>
+        <span class="char-role">Consul · Caesar's Ally</span>
+        <p>Loyal to Caesar and politically astute, Antony turned Caesar's funeral into a masterwork of rhetorical manipulation, unleashing the fury of Rome upon the conspirators.</p>
+      </div>
+      <div class="char-card">
+        <span class="char-initial">C</span>
+        <h4>Gaius Cassius</h4>
+        <span class="char-role">Conspirator · Senator</span>
+        <p>The architect of the conspiracy. A lean and hungry man, Cassius harboured personal grudges against Caesar and the vision necessary to recruit Brutus as the plot's moral cornerstone.</p>
+      </div>
+    </div>
+
+    <!-- FEATURED ROW -->
+    <div class="featured-row">
+      <div class="featured-main">
+        <span class="section-banner">ANALYSIS</span>
+        <h2>The Ghost of Caesar and the Fall of the Conspirators</h2>
+        <span class="byline">By Lucius Veranius · Senior Political Correspondent</span>
+        <p class="drop-cap">In the days and weeks following the assassination, the faction of Brutus and Cassius found themselves not the liberators of Rome they imagined, but hunted men. Mark Antony, joined by the young Octavian — Caesar's adopted heir — and the general Lepidus, formed the Second Triumvirate and moved against the conspirators with overwhelming force.</p>
+        <p>The two armies met at the plains of Philippi in Macedonia. There, in two decisive engagements, the republican forces were broken. Cassius, believing mistakenly that Brutus too had been defeated, fell upon his own sword. Brutus, after suffering a final defeat, followed suit — reportedly declaring that Caesar's ghost had at last been avenged.</p>
+        <p>Thus did the conspirators' enterprise end not in the restoration of the Republic they so dearly wished to preserve, but in its further destruction. The irony shall be remarked upon by historians for centuries to come: the men who killed Caesar to prevent a monarchy gave Rome an emperor.</p>
+      </div>
+      <div class="featured-sidebar">
+        <div class="oracle-box">
+          <h3>⚡ Omens & Portents ⚡</h3>
+          <p>Citizens report with great alarm that in the days preceding the Ides, numerous <span class="omen">terrible omens</span> were observed throughout Rome. A soothsayer is said to have warned Caesar directly: <em>"Beware the Ides of March."</em></p>
+          <p style="margin-top:8px">Caesar's wife, Calpurnia, besought him not to attend the Senate, having been visited in the night by <span class="omen">dreadful dreams</span> of his statue spouting blood. Lions were reportedly seen whelping in the streets. Graves yielded up their dead. And above the Capitol, <span class="omen">fiery warriors fought in the clouds.</span></p>
+          <p style="margin-top:8px">Caesar dismissed all such warnings, declaring he was not afraid of death. He was, say those close to him, perhaps the only man in Rome who was not.</p>
+        </div>
+        <div class="sidebar-item">
+          <h4>Portia's Sacrifice</h4>
+          <p>Brutus's devoted wife Portia, having been privy to the conspiracy and unable to bear her husband's disgrace and flight, is reported to have taken her own life by swallowing hot coals. Rome mourns her.</p>
+        </div>
+        <div class="sidebar-item">
+          <h4>The Young Octavian</h4>
+          <p>Caesar's great-nephew and adopted son Gaius Octavius, known henceforth as Octavian, returns to Rome to claim his inheritance. Observers note an uncommon shrewdness in the young man that belies his eighteen years.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="gold-rule">✦ ✦ ✦ ✦ ✦</div>
+
+    <!-- BOTTOM GRID -->
+    <div class="bottom-grid">
+      <!-- ACT BY ACT -->
+      <div class="bottom-col">
+        <span class="section-banner">TIMELINE</span>
+        <h3>The Play: Act by Act</h3>
+        <div class="timeline-item">
+          <span class="timeline-act">ACT I</span>
+          <p>Tribunes Flavius and Marullus chastise crowds celebrating Caesar's triumph. A soothsayer warns Caesar of the Ides of March. Cassius begins seducing Brutus toward conspiracy.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-act">ACT II</span>
+          <p>Brutus, tormented, resolves to join the conspiracy. Portia pleads with him. Caesar ignores Calpurnia's dreams and Artemidorus's letter of warning, and proceeds to the Capitol.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-act">ACT III</span>
+          <p>The assassination. Antony's funeral oration. The mob erupts and Rome descends into riot. The conspirators flee the city.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-act">ACT IV</span>
+          <p>The Triumvirate consolidates power. Brutus and Cassius quarrel and reconcile. Brutus is visited by the Ghost of Caesar, who promises to meet him at Philippi.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-act">ACT V</span>
+          <p>The Battle of Philippi. Cassius and Brutus both die by their own hands. Antony eulogises Brutus as "the noblest Roman of them all."</p>
+        </div>
+      </div>
+
+      <!-- THEMES -->
+      <div class="bottom-col">
+        <span class="section-banner">COMMENTARY</span>
+        <h3>Themes of the Age</h3>
+        <p>Shakespeare's tragedy, performed at the Globe Theatre, compels its audience to grapple with questions as urgent today as in Caesar's Rome. Chief among these is the tension between <em>personal honour</em> and <em>political expediency</em> — a tension embodied in Brutus, who kills a friend out of principle and destroys himself in the process.</p>
+        <p style="margin-top:8px">The play also asks: what makes a tyrant? Caesar is ambitious, yes — but is ambition alone sufficient cause for murder? Cassius's motivations are revealed as far less noble than Brutus's, suggesting the conspiracy is rotten at its core from the outset.</p>
+        <p style="margin-top:8px">Power corrupts not only its holders but those who would remove it. Antony, ostensibly avenging Caesar for noble reasons, proves himself every bit as manipulative as Cassius. The Republic, it seems, was doomed regardless of the Ides of March.</p>
+        <p style="margin-top:8px">Most haunting of all is the play's treatment of fate. Soothsayers, omens, and ghosts suggest that Caesar's end — and the Republic's — was written long before any conspirator raised a blade.</p>
+      </div>
+
+      <!-- KEY QUOTES -->
+      <div class="bottom-col">
+        <span class="section-banner">QUOTATIONS</span>
+        <h3>Memorable Utterances</h3>
+        <div class="sidebar-item">
+          <p><em>"Cowards die many times before their deaths; the valiant never taste of death but once."</em></p>
+          <p style="margin-top:4px; font-size:0.72rem; font-style:normal; color:var(--ink-faded);">— Julius Caesar, Act II</p>
+        </div>
+        <div class="sidebar-item">
+          <p><em>"There is a tide in the affairs of men, which, taken at the flood, leads on to fortune."</em></p>
+          <p style="margin-top:4px; font-size:0.72rem; font-style:normal; color:var(--ink-faded);">— Brutus, Act IV</p>
+        </div>
+        <div class="sidebar-item">
+          <p><em>"The fault, dear Brutus, is not in our stars, but in ourselves, that we are underlings."</em></p>
+          <p style="margin-top:4px; font-size:0.72rem; font-style:normal; color:var(--ink-faded);">— Cassius, Act I</p>
+        </div>
+        <div class="sidebar-item">
+          <p><em>"This was the most unkindest cut of all."</em></p>
+          <p style="margin-top:4px; font-size:0.72rem; font-style:normal; color:var(--ink-faded);">— Mark Antony, Act III</p>
+        </div>
+        <div class="sidebar-item">
+          <p><em>"This is the noblest Roman of them all."</em></p>
+          <p style="margin-top:4px; font-size:0.72rem; font-style:normal; color:var(--ink-faded);">— Mark Antony on Brutus, Act V</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /paper-body -->
+
+  <!-- FOOTER -->
+  <footer class="paper-footer">
+    <span>THE ROMAN TIMES · EST. A.U.C. 709</span>
+    <span class="footer-center">Printed by Order of the Senate and People of Rome — S.P.Q.R.</span>
+    <span>ALL RIGHTS RESERVED UNDER ROMAN LAW</span>
+  </footer>
+
+</div><!-- /newspaper -->
+</body>
+</html>
